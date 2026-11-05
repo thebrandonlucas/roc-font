@@ -67,7 +67,7 @@ jobs:
             *) echo "::error::the latest roc-lang/nightlies release is not a nightly: $tag"; exit 1 ;;
           esac
 
-      - uses: lukewilliamboswell/roc-automation/actions/setup-blueprint@1f3bc71102cf2d07c324b6009a41823efd21c9aa
+      - uses: ./.github/actions/setup-kai
 
       - name: Install that Roc nightly
         uses: roc-lang/setup-roc@f5a74bf90aa694b43ab4a7cbfdb19273bc6aa697
@@ -131,7 +131,7 @@ jobs:
       - name: Run every check
         if: github.event_name != 'pull_request'
         # Fuzzing and benchmarks only smoke-test here; full runs are local.
-        run: blueprint run check -- --smoke
+        run: kai run check -- --smoke
 
       - name: Bundle the package
         run: |
@@ -166,6 +166,7 @@ jobs:
         with:
           task: docs-path
           label: roc-docs tools-0.2.0
+          blueprint-binary: kai
 
       - id: docs
         if: env.BUILD_MANUAL == 'true'
