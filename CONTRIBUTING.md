@@ -20,9 +20,10 @@ first change; it applies to people as much as to agents.
 - **Python 3.10 or later.** The check scripts under `scripts/` use the
   standard library only. `zstd` (or Python 3.14) lets the bundle check look
   inside the bundle; without it that step is skipped.
-- **Optionally, [Blueprint](https://github.com/lukewilliamboswell/roc-blueprint)
-  0.8.0**, to run the named tasks below as CI does, and to render the manual
-  with the renderer pinned in `Blueprint.lock`. No Nix is needed.
+- **Optionally, [Kai](https://github.com/thebrandonlucas/kai)**, at the release
+  named at the top of `Kaifile.roc`, to run the named tasks below as CI does,
+  and to render the manual with the renderer pinned in `.kai/lock.json`. No
+  Nix is needed.
 
 Oracles (HarfBuzz through uharfbuzz, fontTools, FreeType, Chrome) are
 needed only to record new reference results, never to run the checks.
@@ -32,7 +33,7 @@ needed only to record new reference results, never to run the checks.
 One command runs everything a pull request must pass:
 
 ```sh
-blueprint run check            # or: python3 scripts/all_tests.py
+kai run check            # or: python3 scripts/all_tests.py
 ```
 
 It runs, in order and reporting each step: the compiler in use, `roc fmt
@@ -46,7 +47,7 @@ and `git diff --check`. Select steps with `--only`, drop them with `--skip`
 and list them with `--list`:
 
 ```sh
-blueprint run check -- --only fmt,check,test
+kai run check -- --only fmt,check,test
 python3 scripts/all_tests.py --skip fuzz-smoke
 ```
 
@@ -78,7 +79,7 @@ python3 -I scripts/flight.py -- sh -c \
 bundle instead, which is how the release workflow tests the exact asset it
 publishes.
 
-The other tasks in `Blueprint.roc`:
+The other tasks in `Kaifile.roc`:
 
 | Task | What it runs |
 | --- | --- |
@@ -89,11 +90,11 @@ The other tasks in `Blueprint.roc`:
 | `docs` | render the manual in `docs/` into `.docs-out/` |
 | `examples` | build and run every example in `examples/` against its recorded output (`-- --update` re-records) |
 
-Pull-request CI runs `blueprint run check -- --smoke` with the latest Roc
+Pull-request CI runs `kai run check -- --smoke` with the latest Roc
 nightly (`.github/workflows/ci.yml`). `--smoke` keeps CI fast:
 fuzz targets run 200 inputs each and the benchmarks run one Roc-only pass,
 proving both build and run. The allocation ratchet, the comparison
-programs and fuzz campaigns are local: run the full `blueprint run check`
+programs and fuzz campaigns are local: run the full `kai run check`
 (and `scripts/run_fuzz.py campaign`) before pushing a change to a hot path
 or a reading or shaping stage. Dedicated CI jobs for them can be added
 when there is a need.
@@ -157,7 +158,7 @@ Each kind of test has a chapter in the manual:
 `roc docs package/main.roc` is the API reference and the authority for
 public names; the checks fail when it shows an internal helper. The manual
 is AsciiDoc under `docs/`, with `docs/index.adoc` as its entry point; render
-it with `blueprint run docs`. It is built by roc-automation's shared
+it with `kai run docs`. It is built by roc-automation's shared
 renderer, which accepts a subset of AsciiDoc and rejects the rest: link
 between chapters with `xref:chapter.adoc#section-id[text]`, give tables a
 header row and explicit `cols`, and avoid escaped `\|` separators in cells.
@@ -186,4 +187,5 @@ change; and review the compiler notes below.
   build; the scripts tolerate only problems inside the cached platform.
   basic-cli 0.26.0 reports none on nightly-2026-10-24.
 - A local debug `roc` on `PATH` may panic on this code; use the latest
-  nightly (`ROC=...`).
+  nightly (`ROC=...`; under `kai run`, which reads `ROC` itself, put it first
+  on `PATH` instead).
