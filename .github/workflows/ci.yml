@@ -1,7 +1,7 @@
 name: CI
 
 # Checks the working tree with the same task a contributor runs locally:
-# `blueprint run check`, which is scripts/all_tests.py. The package compiler
+# `kai run check`, which is scripts/all_tests.py. The package compiler
 # is the latest Roc nightly; nothing pins it, and the check's compiler step
 # reports which one ran. A new nightly can break an untouched pull request:
 # compare with the latest scheduled run on main before treating a failure as
@@ -38,15 +38,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: lukewilliamboswell/roc-automation/actions/setup-blueprint@1f3bc71102cf2d07c324b6009a41823efd21c9aa
+      - uses: thebrandonlucas/kai/.github/actions/setup-kai@fd316fbad644f2e52c620ad83385fcc4b9c31372 # v0.0.12
+        with:
+          version: 0.0.12
+          nix: 'false'
 
       - name: Install the latest Roc nightly
         uses: roc-lang/setup-roc@f5a74bf90aa694b43ab4a7cbfdb19273bc6aa697
         with:
           version: nightly-new-compiler
 
-      - run: blueprint check
+      - run: kai check
 
       - name: Run every check
         # Fuzzing and benchmarks only smoke-test here; full runs are local.
-        run: blueprint run check -- --smoke
+        run: kai run check -- --smoke

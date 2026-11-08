@@ -64,7 +64,7 @@ package:
 | HarfBuzz, ttf-parser 0.25.1, rustybuzz 0.20.1, fontTools | `bench/compare/` (timing comparison) | Old MIT; MIT or Apache-2.0; MIT; MIT |
 | basic-cli | the conformance driver, API tests and benchmarks | UPL-1.0 |
 | roc-fuzz | fuzz targets and the allocation benchmark | MIT |
-| roc-docs (roc-automation tools-0.2.0) | rendering the manual; pinned in `Blueprint.lock` | UPL-1.0; its embedded fonts are listed by `roc-docs --licenses` |
+| roc-docs (roc-automation tools-0.2.0) | rendering the manual; pinned in `.kai/lock.json` | UPL-1.0; its embedded fonts are listed by `roc-docs --licenses` |
 
 The shipped defaults now use the unchanged static TTF faces from these same
 releases: four Inter, four Merriweather and two Fira Code faces. Exact current

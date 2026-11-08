@@ -67,7 +67,10 @@ jobs:
             *) echo "::error::the latest roc-lang/nightlies release is not a nightly: $tag"; exit 1 ;;
           esac
 
-      - uses: lukewilliamboswell/roc-automation/actions/setup-blueprint@1f3bc71102cf2d07c324b6009a41823efd21c9aa
+      - uses: thebrandonlucas/kai/.github/actions/setup-kai@fd316fbad644f2e52c620ad83385fcc4b9c31372 # v0.0.12
+        with:
+          version: 0.0.12
+          nix: 'false'
 
       - name: Install that Roc nightly
         uses: roc-lang/setup-roc@f5a74bf90aa694b43ab4a7cbfdb19273bc6aa697
@@ -131,7 +134,7 @@ jobs:
       - name: Run every check
         if: github.event_name != 'pull_request'
         # Fuzzing and benchmarks only smoke-test here; full runs are local.
-        run: blueprint run check -- --smoke
+        run: kai run check -- --smoke
 
       - name: Bundle the package
         run: |
@@ -162,7 +165,10 @@ jobs:
 
       - id: renderer
         if: env.BUILD_MANUAL == 'true'
-        uses: lukewilliamboswell/roc-automation/actions/blueprint-tool@1f3bc71102cf2d07c324b6009a41823efd21c9aa
+        # TODO(thebrandonlucas/roc-automation): the fork's kai-tool action,
+        # which resolves a tool with `kai run TASK`, with the existing tool
+        # action's inputs and outputs. Pinned to the head of the fork's kai branch.
+        uses: thebrandonlucas/roc-automation/actions/kai-tool@19a848eef6e345a671191da6fa6818918c815aa6
         with:
           task: docs-path
           label: roc-docs tools-0.2.0
